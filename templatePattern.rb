@@ -103,3 +103,7 @@ class Report
      def output_end
      end
    end
+
+   #Invoke
+   report = HTMLReport.new
+   report.output_report
