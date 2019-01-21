@@ -7,100 +7,44 @@
 # We pick the variation that we want by selecting one of those concrete subclasses.
 
 class Report
-     def initialize
+     attr_reader :title, :text
+     attr_accessor :formatter
+
+     def initialize(formatter)
        @title = 'Monthly Report'
        @text =  ['Things are going', 'really, really well.']
+       @formatter = formatter
      end
 
-     def output_report
-       output_start
-       output_head
-       output_body_start
-       output_body
-       output_body_end
-       output_end
-     end
-
-     def output_body
-       @text.each do |line|
-         output_line(line)
-       end
-     end
-
-     def output_start
-       raise 'Called abstract method: output_start'
-     end
-
-     def output_head
-       raise 'Called abstract method: output_head'
-     end
-
-     def output_body_start
-       raise 'Called abstract method: output_body_start'
-     end
-
-     def output_line(line)
-       raise 'Called abstract method: output_line'
-     end
-
-     def output_body_end
-       raise 'Called abstract method: output_body_end'
-     end
-
-     def output_end
-       raise 'Called abstract method: output_end'
+     def output_report()
+       @formatter.output_report(self)
      end
    end
 
-
-   class HTMLReport < Report
-     def output_start
+   class HTMLFormatter
+     def output_report(context)
        puts('<html>')
-     end
-
-     def output_head
        puts('  <head>')
-       puts("    <title>#{@title}</title>")
+       # Output The rest of the report ...
+
+       puts("    <title>#{context.title}</title>")
        puts('  </head>')
-     end
+       puts('  <body>')
+       context.text.each do |line|
+         puts("    <p>#{line}</p>")
+       end
+       puts('  </body>')
 
-     def output_body_start
-       puts('<body>')
-     end
-
-     def output_line(line)
-       puts("  <p>#{line}</p>")
-     end
-
-     def output_body_end
-       puts('</body>')
-     end
-
-     def output_end
        puts('</html>')
      end
    end
 
-   class PlainTextReport < Report
-     def output_start
-     end
-
-     def output_head
-       puts("**** #{@title} ****")
-       puts
-     end
-
-     def output_body_start
-     end
-
-     def output_line(line)
-       puts(line)
-     end
-
-     def output_body_end
-     end
-
-     def output_end
+   class PlainTextFormatter
+     def output_report(context)
+       puts("***** #{context.title} *****")
+       context.text.each do |line|
+         puts(line)
+       end
      end
    end
 
